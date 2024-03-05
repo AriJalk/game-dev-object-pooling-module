@@ -10,10 +10,10 @@ void NodePool::register_prefab(const String &type, Node3D *node, int amount) {
 	String ascii = type.ascii();
 	std::map<String, std::queue<Node3D *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() || node == nullptr) {
-		print_line("Can't register");
+		print_error("Can't register");
 		return;
 	}
-	print_line("Register " + ascii);
+	//print_line("Register " + ascii);
 	std::queue<Node3D *> *newQueue = new std::queue<Node3D *>();
 	for (int i = 0; i < amount; i++) {
 		Node3D *newNode = (Node3D *)(node->duplicate());
@@ -29,15 +29,16 @@ void NodePool::register_prefab(const String &type, Node3D *node, int amount) {
 
 Node3D *NodePool::retrieve_prefab(const String &type) {
 	String ascii = type.ascii();
-	print_line("Retrieve " + ascii);
+	//print_line("Retrieve " + ascii);
 	std::map<String, std::queue<Node3D *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() && iterator->second->size() > 0) {
 		Node3D *node = iterator->second->front();
 
 		iterator->second->pop();
+		remove_child(node);
 		return node;
 	}
-	print_line("no prefab found");
+	print_error("no prefab found");
 	return nullptr;
 }
 
