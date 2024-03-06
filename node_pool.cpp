@@ -39,7 +39,6 @@ void NodePool::register_prefab(const String &type, Node *node, int amount) {
 /// <param name="type"></param>
 /// <returns>Node of type "type"</returns>
 Node *NodePool::retrieve_prefab(const String &type) {
-	String ascii = type.ascii();
 	std::map<String, std::queue<Node *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() && iterator->second->size() > 0) {
 		Node *node = iterator->second->front();
@@ -64,6 +63,8 @@ void NodePool::return_prefab(const String &type, Node *node) {
 			parent->remove_child(node);
 		}
 		iterator->second->push(node);
+	} else {
+		print_error("Can't return prefab");
 	}
 }
 
