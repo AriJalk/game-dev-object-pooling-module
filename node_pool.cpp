@@ -6,15 +6,23 @@ void NodePool::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("return_prefab", "type", "node"), &NodePool::return_prefab);
 }
 
+/// <summary>
+/// Set prefab node and instantiate x = amount instances and store in pool
+/// </summary>
+/// <param name="type"></param>
+/// <param name="node"></param>
+/// <param name="amount"></param>
 void NodePool::register_prefab(const String &type, Node *node, int amount) {
 	String ascii = type.ascii();
+	// Check if type already exist or null
 	std::map<String, std::queue<Node *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() || node == nullptr) {
 		print_error("Can't register");
 		return;
 	}
-	//print_line("Register " + ascii);
+	// Set type queue
 	std::queue<Node *> *newQueue = new std::queue<Node *>();
+	// Instantiate
 	for (int i = 0; i < amount; i++) {
 		Node *newNode = (Node *)(node->duplicate());
 		if (newNode) {
@@ -25,9 +33,13 @@ void NodePool::register_prefab(const String &type, Node *node, int amount) {
 	poolMap.insert(std::pair<String, std::queue<Node *> *>(type, newQueue));
 }
 
+/// <summary>
+/// Get registered prefab from existing pool
+/// </summary>
+/// <param name="type"></param>
+/// <returns>Node of type "type"</returns>
 Node *NodePool::retrieve_prefab(const String &type) {
 	String ascii = type.ascii();
-	//print_line("Retrieve " + ascii);
 	std::map<String, std::queue<Node *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() && iterator->second->size() > 0) {
 		Node *node = iterator->second->front();
@@ -39,6 +51,11 @@ Node *NodePool::retrieve_prefab(const String &type) {
 	return nullptr;
 }
 
+/// <summary>
+/// Store prefab node back in pool, and take out of scene-tree is needed
+/// </summary>
+/// <param name="type"></param>
+/// <param name="node"></param>
 void NodePool::return_prefab(const String &type, Node *node) {
 	std::map<String, std::queue<Node *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() && node != nullptr) {
