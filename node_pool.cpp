@@ -13,7 +13,6 @@ void NodePool::_bind_methods() {
 /// <param name="node"></param>
 /// <param name="amount"></param>
 void NodePool::register_prefab(const String &type, Node *node, int amount) {
-	String ascii = type.ascii();
 	// Check if type already exist or null
 	std::map<String, std::queue<Node *> *>::iterator iterator = poolMap.find(type);
 	if (iterator != poolMap.end() || node == nullptr) {
